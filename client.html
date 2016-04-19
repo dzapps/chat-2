@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript">
+    // our socket.io code goes here
+    var socketio = io.connect("127.0.0.1:1337");
+
+    socketio.on("valentine_message_to_client", function(data) {
+      console.log(data);
+      document.getElementById("chatlog").innerHTML = (
+        "<hr/>" + data['message'] + document.getElementById("chatlog").innerHTML
+      );
+    });
+
+    function sendMessage(event) {
+      // event.preventDefault();
+      let el = document.getElementById("message_input");
+      var msg = el.value;
+      el.value = '';
+      socketio.emit("valentine_message_to_server", {
+        message: msg
+      });
+
+      return false;
+    }
+  </script>
+</head>
+
+<body>
+  <form onsubmit="event.preventDefault(); sendMessage();">
+    <input type="text" id="message_input" />
+    <button onclick="sendMessage()">send</button>
+  </form>
+  <div id="chatlog"></div>
+</body>
+
+</html>
